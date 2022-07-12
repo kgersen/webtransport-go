@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"time"
 
@@ -23,14 +24,17 @@ func main() {
 	defer cancel()
 	stream, err := conn.OpenStreamSync(ctx)
 	if err != nil {
-		log.Fatal(nil)
+		log.Fatal(err)
 	}
-	n, err := stream.Write([]byte("HELLO WORLD"))
-
+	n, err := stream.Write([]byte("HELLO WORLD\n"))
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Printf("sent %d bytes\n", n)
+	// fmt.Printf("sleeping 3 seconds\n")
+	// time.Sleep(time.Second * 5)
 	stream.Close()
+	reply, err := io.ReadAll(stream)
+	fmt.Printf("got reply:%s\n", reply)
 	conn.Close()
 }
