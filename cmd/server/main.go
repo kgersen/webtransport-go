@@ -56,12 +56,12 @@ func main() {
 			return
 		}
 		fmt.Printf("%d bytes received\n", n)
-		stream.Write([]byte("SERVER IS OK"))
+		stream.Write([]byte("OK GOT IT"))
 		stream.Close()
 		fmt.Printf("replied and closed\n")
 	})
 
-	err := s.ListenAndServeTLS("localhost.pem", "localhost-key.pem")
+	err := s.ListenAndServeTLS("localhost-nuc7.pem", "localhost-nuc7-key.pem")
 	if err != nil {
 		log.Fatal(err)
 	}

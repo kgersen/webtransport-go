@@ -18,7 +18,7 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Printf("resp status: %d\n", rsp.StatusCode)
-	fmt.Printf("session opened to %s", conn.RemoteAddr())
+	fmt.Printf("session opened to %s\n", conn.RemoteAddr())
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -34,6 +34,7 @@ func main() {
 	// fmt.Printf("sleeping 3 seconds\n")
 	// time.Sleep(time.Second * 5)
 	stream.Close()
+	// stream is closed but we can read...
 	reply, err := io.ReadAll(stream)
 	fmt.Printf("got reply:%s\n", reply)
 	conn.Close()
