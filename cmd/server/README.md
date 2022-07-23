@@ -4,4 +4,5 @@ use ../client
 or 
 https://googlechrome.github.io/samples/webtransport/client.html (
 
-see https://github.com/aiortc/aioquic/issues/163 
+python server from:
+https://github.com/GoogleChrome/samples/tree/gh-pages/webtransport
