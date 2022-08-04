@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -15,8 +16,18 @@ import (
 )
 
 func main() {
+
+	addr := flag.String("host", ":4433", "addr to listen to")
+	key := flag.String("key", "", "TLS private key file")
+	cert := flag.String("cert", "", "TLS certificate file")
+	flag.Parse()
+	if *key == "" || *cert == "" {
+		flag.Usage()
+		return
+	}
+
 	s := webtransport.Server{
-		H3: http3.Server{Addr: ":4433"},
+		H3: http3.Server{Addr: *addr},
 	}
 
 	// Create a new HTTP endpoint /webtransport.
@@ -61,7 +72,7 @@ func main() {
 		fmt.Printf("replied and closed\n")
 	})
 
-	err := s.ListenAndServeTLS("localhost-nuc7.pem", "localhost-nuc7-key.pem")
+	err := s.ListenAndServeTLS(*cert, *key)
 	if err != nil {
 		log.Fatal(err)
 	}
