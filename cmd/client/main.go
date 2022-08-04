@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -12,8 +13,15 @@ import (
 
 func main() {
 
+	url := "https://localhost:4433/counter"
+	flag.Parse()
+
+	if flag.Arg(0) != "" {
+		url = flag.Arg(0)
+	}
+
 	var d webtransport.Dialer
-	rsp, conn, err := d.Dial(context.Background(), "https://localhost:4433/counter", nil)
+	rsp, conn, err := d.Dial(context.Background(), url, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -36,6 +44,6 @@ func main() {
 	stream.Close()
 	// stream is closed but we can read...
 	reply, err := io.ReadAll(stream)
-	fmt.Printf("got reply:%s\n", reply)
+	fmt.Printf("got reply:%s (err = %s)\n", reply, err)
 	conn.Close()
 }
