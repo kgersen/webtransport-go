@@ -87,9 +87,6 @@ from aioquic.quic.configuration import QuicConfiguration
 from aioquic.quic.connection import stream_is_unidirectional
 from aioquic.quic.events import ProtocolNegotiated, StreamReset, QuicEvent
 
-BIND_ADDRESS = '::1'
-BIND_PORT = 4433
-
 logger = logging.getLogger(__name__)
 
 # CounterHandler implements a really simple protocol:
@@ -199,8 +196,33 @@ class WebTransportProtocol(QuicConnectionProtocol):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('certificate')
-    parser.add_argument('key')
+
+    parser.add_argument(
+        "--host",
+        type=str,
+        default="::1",
+        help="listen on the specified address (defaults to ::)",
+    )
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=4433,
+        help="listen on the specified port (defaults to 4433)",
+    )
+    parser.add_argument(
+        "-c",
+        "--certificate",
+        type=str,
+        required=True,
+        help="load the TLS certificate from the specified file",
+    )
+    parser.add_argument(
+        "-k",
+        "--key",
+        type=str,
+        help="load the TLS private key from the specified file",
+    )
+
     args = parser.parse_args()
 
     configuration = QuicConfiguration(
@@ -213,14 +235,14 @@ if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     loop.run_until_complete(
         serve(
-            BIND_ADDRESS,
-            BIND_PORT,
+            args.host,
+            args.port,
             configuration=configuration,
             create_protocol=WebTransportProtocol,
         ))
     try:
         logging.info(
-            "Listening on https://{}:{}".format(BIND_ADDRESS, BIND_PORT))
+            "Listening on https://{}:{}".format(args.host, args.port))
         loop.run_forever()
     except KeyboardInterrupt:
         pass
