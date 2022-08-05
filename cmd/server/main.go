@@ -27,7 +27,8 @@ func main() {
 	}
 
 	s := webtransport.Server{
-		H3: http3.Server{Addr: *addr},
+		H3:          http3.Server{Addr: *addr},
+		CheckOrigin: func(r *http.Request) bool { return true },
 	}
 
 	// Create a new HTTP endpoint /webtransport.
